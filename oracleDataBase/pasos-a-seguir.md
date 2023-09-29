@@ -58,3 +58,45 @@ Para conectarte con la configuración anterior deberías utilizar los siguientes
 * Driver: Oracle JDBC driver 12.2.0.1.0
 * Herramienta de administración de bases de datos con la que se probó: DBeaver
 * [Documentación utilizada](https://container-registry.oracle.com/ords/f?p=113:4:120693202410983:::4:P4_REPOSITORY,AI_REPOSITORY,AI_REPOSITORY_NAME,P4_REPOSITORY_NAME,P4_EULA_ID,P4_BUSINESS_AREA_ID:9,9,Oracle%20Database%20Enterprise%20Edition,Oracle%20Database%20Enterprise%20Edition,1,0&cs=3CurpWdm1xAd5o43qsVtWiSuVvsJakXeESb0l6glWeA3vR7LKLwqsN6TbblvZcvCGbo36OSsNE7rNu8zTAJVXLw)
+
+### Generación de usuario con privilegios en BBDD
+````sql
+CREATE USER srv_expedientes IDENTIFIED BY 1234; --Crea usuario con password
+GRANT DBA TO srv_expedientes; --Asigna permisos
+````
+
+### Configuración en el application.yml de un proyecto Java
+
+````yml
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/ORCLPDB1 #dependiendo de la configuracion utilizada puede variar
+    username: srv_expedientes #usuario configurado
+    password: 1234 #password configurada
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+      show-sql: true
+      properties:
+        hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.Oracle10gDialect
+````
+
+### Dependencias Maven necesarias
+````xml
+    <!-- JPA -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+      <version>3.1.2</version>
+    </dependency>
+    <!-- Driver Oracle-->
+    <dependency>
+      <groupId>com.oracle.database.jdbc</groupId>
+      <artifactId>ojdbc10</artifactId>
+      <version>19.20.0.0</version>
+    </dependency>
+````
+
